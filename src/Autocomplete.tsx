@@ -34,13 +34,17 @@ export const Autocomplete = ({
     onSelected(null);
   };
 
-  const filteredPeople = useMemo(
-    () =>
-      peopleFromServer.filter(person =>
-        person.name.toLowerCase().includes(debouncedValue.toLowerCase()),
-      ),
-    [debouncedValue],
-  );
+  const filteredPeople = useMemo(() => {
+    const normalizedQuery = debouncedValue.trim().toLowerCase();
+
+    if (!normalizedQuery) {
+      return peopleFromServer;
+    }
+
+    return peopleFromServer.filter(person =>
+      person.name.toLowerCase().includes(normalizedQuery),
+    );
+  }, [debouncedValue]);
 
   const onPersonSelect = (person: Person) => {
     setInputValue(person.name);
